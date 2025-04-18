@@ -2,7 +2,7 @@
 import json
 import boto3
 import pyshorteners
-
+import validators
 
 import re
 from urllib.parse import urlparse
@@ -10,13 +10,17 @@ import os
 import secrets
 from datetime import datetime
 
+
+
+
+
 # Initialize DynamoDB client
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ.get('TABLE_NAME', 'url-shortener'))
 
 
-
 def validate_url(url):
+         
     """
     Validates if the given string is a properly formatted URL.
     
@@ -26,34 +30,22 @@ def validate_url(url):
     Returns:
         bool: True if the URL is valid, False otherwise
     """
-    # Check if URL is None or empty
-    if not url or not isinstance(url, str):
+    if url is None or url == "":
         return False, "URL cannot be None or empty"
-    
-    # Basic pattern matching for URL format
-    pattern = re.compile(
-        r'^(?:http|https)://'             # http:// or https:// (required)
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain
-        r'localhost|'                      # localhost
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # or IP
-        r'(?::\d+)?'                       # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)  # path and query string
-    
-    if not pattern.match(url):
-        print(f"Invalid URL format: {url}")
-        return False, "Invalid URL format"
-    
-    # Use urlparse for additional validation
     try:
-        result = urlparse(url)
-        print(f"Parsed URL: {result}")
-        # Check if scheme and netloc are present
-        return True, url if result.scheme and result.netloc else (False, "Invalid URL format")
+        # Use validators library to check if the URL is valid
+        # This will also check for common URL formats (http, https, etc.)
+        if not validators.url(url):
+            return False, "Invalid URL format"
     except Exception as e:
-        print(f"Error parsing URL: {e}")
+        print(f"Error validating URL: {e}")
         return False, "Invalid URL format"
-    # except:
-    #     return False
+
+    return validators.url(url), url
+
+
+    
+    
     
 
 def generate_short_url(original_url):
@@ -75,20 +67,18 @@ def generate_short_url(original_url):
     except Exception as e:
         print(f"Error generating short URL: {e}")
         return json.dumps({'error': str(e)})
-    
+ 
 
-    
-
-
-
-
+# Main Lambda function handler
 def handler(event, context):
     try:
         # Parse the incoming request body
         request_body = json.loads(event.get('body', '{}'))
         original_url = request_body.get('url')
         
-       
+        # Validate the URL format
+        # Check if the URL is valid using the validate_url function
+        
         (val_url,message) = validate_url(original_url)
         if not val_url:
                 return {
@@ -101,11 +91,7 @@ def handler(event, context):
                 }
         else:
                 original_url = message
-
-
-
-
-          
+              
         
         # Check if URL already exists
         response = table.query(
@@ -181,12 +167,6 @@ def handler(event, context):
 
 if __name__ == "__main__":
     # Test the unction locally
-    test_event = {
-        'body': json.dumps({
-            'url': 'https://www.example.com'
-        })
-    }
-    test_context = {}
-
+    valid_url = validate_url("https://www.kaggle.com/code/abdoomoh/10-ways-to-shorten-your-urls-in-python")
+    print("Valid URL:", valid_url)
     
-   
