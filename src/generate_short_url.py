@@ -1,12 +1,10 @@
-# create-short-url.py
 import json
 import boto3
 import pyshorteners
 import validators
 
-import re
-from urllib.parse import urlparse
-import os
+
+
 import secrets
 from datetime import datetime
 
@@ -16,7 +14,7 @@ from datetime import datetime
 
 # Initialize DynamoDB client
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(os.environ.get('TABLE_NAME', 'url-shortener'))
+table = dynamodb.Table('url-shortener')
 
 
 def validate_url(url):
@@ -29,6 +27,7 @@ def validate_url(url):
         
     Returns:
         bool: True if the URL is valid, False otherwise
+        str: The original URL if valid, or an error message if invalid
     """
     if url is None or url == "":
         return False, "URL cannot be None or empty"
@@ -36,16 +35,13 @@ def validate_url(url):
         # Use validators library to check if the URL is valid
         # This will also check for common URL formats (http, https, etc.)
         if not validators.url(url):
-            return False, "Invalid URL format"
+            return False, f'Invalid URL format: {url}'
     except Exception as e:
-        print(f"Error validating URL: {e}")
-        return False, "Invalid URL format"
+            return False, f'Invalid url Format: {e}'
 
     return validators.url(url), url
 
-
-    
-    
+   
     
 
 def generate_short_url(original_url):
@@ -116,22 +112,23 @@ def handler(event, context):
                 'body': json.dumps({
                     'originalUrl': original_url,
                     'shortUrl': item['short_ur'],
-                    'shortId': item['shortId'],
+                    'urlId': item['urlId'],
                     'clicks': item['clicks']
                 })
             }
         else:
     
         # Generate a random short ID (6 characters)
-            short_id = secrets.token_hex(3)  # 3 bytes = 6 hex chara cters
+            urlId = secrets.token_hex(3)  # 3 bytes = 6 hex chara cters
             short_ur= generate_short_url(original_url)
              # Store the mapping in DynamoDB
             table.put_item(
                 Item={
-                    'shortId': short_id,
+                    'urlId': urlId,
                     'originalUrl': original_url,
                     'shortUrl': short_ur,                   
                     'createdAt': datetime.now().isoformat(),
+                    'description': 'Short URL for the original URL',
                     'clicks': 0
                 }
             )
@@ -145,12 +142,14 @@ def handler(event, context):
                 },
                 'body': json.dumps({
                     'originalUrl': original_url,                    
-                    'shortId': short_id,
+                    'shortId': urlId,
                     'shortUrl': short_ur,
                     'createdAt': datetime.now().isoformat(),
                     'clicks': 0
                 })
             }
+        
+
     except Exception as e:
             print(f"Error creating short URL: {str(e)}")
             return {
@@ -166,7 +165,12 @@ def handler(event, context):
 
 
 if __name__ == "__main__":
-    # Test the unction locally
-    valid_url = validate_url("https://www.kaggle.com/code/abdoomoh/10-ways-to-shorten-your-urls-in-python")
-    print("Valid URL:", valid_url)
-    
+    # Test the function locally
+    test_event = {
+        'body': json.dumps({
+            'url': 'https://www.example.com'
+        })
+    }
+    test_context = {}
+    response = handler(test_event, test_context)
+    print(response)
