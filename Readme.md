@@ -2,7 +2,7 @@
 
 ## DynamoDB Table Attributes
 TableName : url-shortener
-urlId: String
+urlId: String ()
 originalUrl: String
 shortUrl: String
 createdAt: String (ISO format)

@@ -4,7 +4,6 @@ import pyshorteners
 import validators
 
 
-
 import secrets
 from datetime import datetime
 
@@ -41,9 +40,7 @@ def validate_url(url):
 
     return validators.url(url), url
 
-   
-    
-
+ 
 def generate_short_url(original_url):
     """
     Generates a short URL for the given original URL.
