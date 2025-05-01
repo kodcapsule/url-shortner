@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'URL Shortener Application with API Gateway, Lambda, S3 and DynamoDB'
+
+Parameters:
+  AppName:
+    Type: String
+    Default: url-shortener
+    Description: Name of the application
+  
+  Stage:
+    Type: String
+    Default: dev
+    Description: Deployment stage (e.g., dev, test, prod)
+    AllowedValues:
+      - dev
+      - test
+      - prod
+Resources:
+  # DynamoDB Table
+  URLShortenerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AppName}"
+      BillingMode: PAY_PER_REQUEST
+      TableClass: STANDARD
+      AttributeDefinitions:
+        - AttributeName: shortId
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+      KeySchema:
+        - AttributeName: shortId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: originalUrl-index
+          KeySchema:
+            - AttributeName: originalUrl
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      Tags:
+        - Key: Application
+          Value: !Ref AppName
+        - Key: Environment
+          Value: !Ref Stage
+  
