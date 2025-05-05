@@ -1,18 +1,20 @@
 # Serverless URL Shortener and QRCode Generator 
 ![Url shotener](./images/Page.png)
 
-A complete serverless URL shortening service built with AWS services and React. This project provides functionality to create shortened URLs and QRCodes, track click statistics, and manage your shortened URLs through a user-friendly interface.
+This is a  serverless URL shortening application that is  built using  AWS services and React. This project provides functionality to generate shortened URLs and QRCodes,  and manage your shortened URLs through a user-friendly interface.
 
 ## Architecture
+
 
 This project uses the following AWS services:
 - **Amazon API Gateway**: For creating RESTful API endpoints
 - **AWS Lambda**: For serverless function execution
 - **Amazon DynamoDB**: For storing URL mappings and analytics
-- **Amazon S3**:
+- **Amazon S3**: For storing the generated QRCodes images
+- **Amazon CloudFront**: For Caching frequently access content
 - **Amazon CloudWatch**: For logging and monitoring
 
-The frontend is built with React and communicates with the backend through API Gateway.
+The frontend of the application is built with React and communicates with the backend through Amazon API Gateway.
 
 ## Project Structure
 
