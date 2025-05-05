@@ -22,13 +22,13 @@ The frontend of the application is built with React and communicates with the ba
 url-shortener/
 ├── backend/   
 │     └── src/     
-│     ├── url_generator.py      # A Lambda function that uses generate_short_url.py generate a short url and stores it in DynamoDB
-│     ├── qr_code_generator.py  # A Lambda function that uses generate_qr_code.py   generate a short url and stores it in S3
-      ├── get_url_QRCode.py     # A Lambda function that retrieves a short url and the QRCode.
+│     │    ├── url_generator.py      # A Lambda function that uses generate_short_url.py generate a short url and stores it in DynamoDB
+│     │    ├── qr_code_generator.py  # A Lambda function that uses generate_qr_code.py   generate a short url and stores it in S3
+│     │    └── get_url_QRCode.py     # A Lambda function that retrieves a short url and the QRCode.
 │     └── utils/
-│         └── validate_url.py    # A util function to validate input urls
-│         ├── generate_qr_code.py    # A util function to generate a QRCode
-│         ├── generate_short_url.py  # A util function to generate a short URL
+│           └── validate_url.py    # A util function to validate input urls
+│           ├── generate_qr_code.py    # A util function to generate a QRCode
+│           └── generate_short_url.py  # A util function to generate a short URL
 │          
 ├── frontend/
 │   ├── public/
