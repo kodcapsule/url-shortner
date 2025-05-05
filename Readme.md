@@ -20,12 +20,16 @@ The frontend of the application is built with React and communicates with the ba
 
 ```
 url-shortener/
-├── backend/
-│   ├── create_short_url.py       # Lambda function to create short URLs
-│   ├── redirect_url.py           # Lambda function to handle redirects
-│   ├── get_url_stats.py          # Lambda function to fetch URL statistics
-│   └── utils/
-│       └── url_validator.py      # URL validation utilities
+├── backend/   
+│     └── src/     
+│     ├── url_generator.py      # A Lambda function that uses generate_short_url.py generate a short url and stores it in DynamoDB
+│     ├── qr_code_generator.py  # A Lambda function that uses generate_qr_code.py   generate a short url and stores it in S3
+      ├── get_url_QRCode.py     # A Lambda function that retrieves a short url and the QRCode.
+│     └── utils/
+│         └── validate_url.py    # A util function to validate input urls
+│         ├── generate_qr_code.py    # A util function to generate a QRCode
+│         ├── generate_short_url.py  # A util function to generate a short URL
+│          
 ├── frontend/
 │   ├── public/
 │   └── src/
@@ -35,9 +39,13 @@ url-shortener/
 │       └── index.js              # React entry point
 ├── infrastructure/
 │   ├── template.yaml             # AWS SAM template
-│   └── policies/                 # IAM policies
-└── README.md                     # This file
+│   └── policies/                  # IAM policies
+├── .gitignore            
+└── README.md                     
 ```
+
+
+
 
 ## Deployment Instructions
 
