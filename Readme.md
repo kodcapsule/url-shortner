@@ -4,6 +4,7 @@
 This is a  serverless URL shortening application that is  built using  AWS services and React. This project provides functionality to generate shortened URLs and QRCodes,  and manage your shortened URLs through a user-friendly interface.
 
 ## Architecture
+![Architecture](./images/architecture.gif)
 
 ## AWS Services 
 This project uses the following AWS services:
@@ -47,7 +48,7 @@ url-shortener/
 
 
 
-## Deployment Instructions
+## Creating and Deploying AWS services 
 
 ### Step 1: Set Up the DynamoDB Table
 
@@ -58,7 +59,7 @@ url-shortener/
    - Partition key: `shortId` (String)
    - Sort Key: `createdAt` (String ,ISO format)
    other attributes that will be added during item creation include,
-      1.originalUrl: String
+      1. originalUrl: String
       2. shortUrl: String
       3. description: String
       4. clicks: Number
@@ -71,7 +72,7 @@ url-shortener/
 
 ### Step 2: Create the Lambda Functions
 
-#### Create Short URL Lambda Function
+#### A. Create  the url_generator Lambda function
 
 1. Navigate to AWS Lambda in the console
 2. Create a new function:
@@ -83,7 +84,7 @@ url-shortener/
    - `TABLE_NAME`: url-shortener
    - `BASE_URL`: Your API Gateway URL (after deploying API Gateway)
 
-#### Redirect URL Lambda Function
+#### B. Create  the qr_code_generator Lambda function
 
 1. Create another Lambda function:
    - Name: `redirect-url`
@@ -92,6 +93,10 @@ url-shortener/
 2. Upload the code from `backend/redirect_url.py`
 3. Set the environment variable:
    - `TABLE_NAME`: url-shortener
+
+### C. Create the get_url_QRCode Lambda function
+
+
 
 #### Get URL Stats Lambda Function
 
@@ -303,11 +308,7 @@ If you're experiencing CORS issues:
 - Implement CloudWatch alarms for unusual traffic patterns
 
 
-# REF
-1. https://kinsta.com/blog/url-shortener-with-python/
-2. https://docs.aws.amazon.com/lambda/latest/dg/python-layers.html
-3. https://github.com/awsdocs/aws-lambda-developer-guide/tree/main/sample-apps/layer-python
-4. https://docs.aws.amazon.com/lambda/latest/dg/python-package.html
+
 
 
 # CHALLEMGES ERRORS
@@ -318,9 +319,12 @@ description: {
   "requestId": "",
   "stackTrace": []
 }
-- Solution: Use
 
 
-## License
 
-This project is released under the MIT License.
+
+## References
+1. https://kinsta.com/blog/url-shortener-with-python/
+2. https://docs.aws.amazon.com/lambda/latest/dg/python-layers.html
+3. https://github.com/awsdocs/aws-lambda-developer-guide/tree/main/sample-apps/layer-python
+4. https://docs.aws.amazon.com/lambda/latest/dg/python-package.html
