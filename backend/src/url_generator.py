@@ -1,16 +1,11 @@
 import json
 import boto3
 
-
-from utils.validate_url import validate_url
-from utils.generate_short_url import generate_short_url
-
+from validate_url import validate_url
+from generate_short_url import generate_short_url
 
 import secrets
 from datetime import datetime
-
-
-
 
 
 # Initialize DynamoDB client
@@ -18,14 +13,12 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('url-shortener')
 
 
- 
-
 # Main Lambda function handler
-def handler(event, context):
+def lambda_handler(event, context):
     try:
         # Parse the incoming request body
-        request_body = json.loads(event.get('body', '{}'))
-        original_url = request_body.get('url')
+        # request_body = event
+        original_url = event['originalUrl']
         
         # Validate the URL format
         # Check if the URL is valid using the validate_url function
@@ -44,17 +37,18 @@ def handler(event, context):
                 original_url = message
               
         
-        # Check if URL already exists
-        response = table.query(
-            IndexName='originalUrl-index',
-            KeyConditionExpression='originalUrl = :original_url',
-            ExpressionAttributeValues={
-                ':original_url': original_url
-            }
-        )
         
         # check if the URL already exists in the database
         # If it exists, return the existing short URL
+        response = table.get_item(
+            Key={
+                'urlId': original_url,
+                'createdAt': '2025-05-07T13:01:53.077591'
+            }
+        )      
+        
+        
+        
         if response.get('Items') and len(response['Items']) > 0:
             # Return existing short URL
             item = response['Items'][0]
@@ -65,9 +59,11 @@ def handler(event, context):
                     'Access-Control-Allow-Origin': '*'
                 },
                 'body': json.dumps({
-                    'originalUrl': original_url,
-                    'shortUrl': item['short_ur'],
-                    'urlId': item['urlId'],
+                    'urlId':item['urlId'],
+                    'originalUrl': item['originalUrl'],
+                    'shortUrl': item['shortUrl'],                   
+                    'createdAt': item['createdAt'],
+                    'description': item['description'],
                     'clicks': item['clicks']
                 })
             }
@@ -77,17 +73,17 @@ def handler(event, context):
             urlId = secrets.token_hex(3)  # 3 bytes = 6 hex chara cters
             short_ur= generate_short_url(original_url)
              # Store the mapping in DynamoDB
+                      
             table.put_item(
                 Item={
-                    'urlId': urlId,
-                    'originalUrl': original_url,
+                    'urlId':urlId,
+                    'originalUrl': event['originalUrl'],
                     'shortUrl': short_ur,                   
                     'createdAt': datetime.now().isoformat(),
-                    'description': 'Short URL for the original URL',
-                    'clicks': 0
+                    'description': event['description'],
+                    'clicks': event['clicks']
                 }
             )
-            
 
             return {
                 'statusCode': 201,
@@ -96,11 +92,12 @@ def handler(event, context):
                     'Access-Control-Allow-Origin': '*'
                 },
                 'body': json.dumps({
-                    'originalUrl': original_url,                    
-                    'shortId': urlId,
-                    'shortUrl': short_ur,
+                   'urlId':event['urlid'],
+                    'originalUrl': event['originalUrl'],
+                    'shortUrl': event['shortUrl'],                   
                     'createdAt': datetime.now().isoformat(),
-                    'clicks': 0
+                    'description': event['description'],
+                    'clicks': event['clicks']
                 })
             }
         
@@ -119,11 +116,3 @@ def handler(event, context):
 
 
 
-if __name__ == "__main__":
-    # Test the function locally
-
-    (val_url,message)=validate_url("https://www.youtube.com/watch?v=SPcwo0Gq9T8&t=477s")
-    print(val_url)
-    print(message)
-    short_url = generate_short_url("https://www.youtube.com/watch?v=SPcwo0Gq9T8&t=477s")
-    print(short_url)

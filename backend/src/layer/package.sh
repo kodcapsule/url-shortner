@@ -5,11 +5,11 @@
 # Ensure you have the required permissions to execute this script
 
 
-python3.13 -m venv url_layer
-source url_layer/bin/activate
+python -m venv url_layer
+source url_layer/Scripts/activate
 pip install -r requirements.txt
 
 # 
 mkdir python
-cp -r url_layer/lib python/
+cp -r url_layer/lib/site-packages python/
 zip -r url_layer_content.zip python

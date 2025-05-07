@@ -257,6 +257,7 @@ Implement Amazon Cognito to track URLs by user and provide private URLs.
 ## Troubleshooting
 
 ### Missing Dependencies
+**ERROR:**
 1. [ERROR] Runtime.ImportModuleError: Unable to import module 'lambda_function': No module named 'pyshorteners'
 description: {
   "errorMessage": "Unable to import module 'lambda_function': No module named 'pyshorteners'",
@@ -264,9 +265,18 @@ description: {
   "requestId": "",
   "stackTrace": []
 }
+ **Solution:** 
 
-
+### Using wrong dynamoDB key
+2. [Error] creating short URL: An error occurred (ValidationException) when calling the Query operation: The table does not have the specified index: originalUrl-index
 - Solution: 
+
+### Lambda timing out
+Response:
+{
+  "errorType": "Sandbox.Timedout",
+  "errorMessage": "RequestId: 5b6b6480-c2c8-4fb5-9145-9d2fc6261172 Error: Task timed out after 3.00 seconds"
+}
 
 1. Create a directory and install dependencies:
 ```bash
