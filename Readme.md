@@ -5,7 +5,7 @@ This is a  serverless URL shortening application that is  built using  AWS servi
 
 ## Architecture
 
-
+## AWS Services 
 This project uses the following AWS services:
 - **Amazon API Gateway**: For creating RESTful API endpoints
 - **AWS Lambda**: For serverless function execution
@@ -307,6 +307,7 @@ If you're experiencing CORS issues:
 1. https://kinsta.com/blog/url-shortener-with-python/
 2. https://docs.aws.amazon.com/lambda/latest/dg/python-layers.html
 3. https://github.com/awsdocs/aws-lambda-developer-guide/tree/main/sample-apps/layer-python
+4. https://docs.aws.amazon.com/lambda/latest/dg/python-package.html
 
 
 # CHALLEMGES ERRORS

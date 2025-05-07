@@ -2,8 +2,8 @@ import json
 import boto3
 
 
-from validate_url import validate_url
-from generate_short_url import generate_short_url
+from utils.validate_url import validate_url
+from utils.generate_short_url import generate_short_url
 
 
 import secrets
@@ -122,7 +122,8 @@ def handler(event, context):
 if __name__ == "__main__":
     # Test the function locally
 
-    (val_url,message)=validate_url("https://www.example.com")
+    (val_url,message)=validate_url("https://www.youtube.com/watch?v=SPcwo0Gq9T8&t=477s")
     print(val_url)
     print(message)
-  
+    short_url = generate_short_url("https://www.youtube.com/watch?v=SPcwo0Gq9T8&t=477s")
+    print(short_url)
