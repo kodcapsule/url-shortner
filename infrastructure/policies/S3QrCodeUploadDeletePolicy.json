@@ -1,0 +1,39 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3PutandDeleteObject",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:DeleteObjectVersion",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::<BUCKET-NAME>",
+                "arn:aws:s3:::<BUCKET-NAME>/*"                
+            ]
+        },
+        {
+            "Sid": "LambdaBasicExecution",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+            "Sid": "DynamoDBStreamRead",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:ListStreams"
+            ],
+            "Resource": "arn:aws:dynamodb:<REGION>:<ACCOUNT-ID>:table/<TABLE-NAME>/stream/<STREAM-NAME>"
+        }
+    ]
+}

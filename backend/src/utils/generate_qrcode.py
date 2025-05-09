@@ -37,8 +37,8 @@ def generate_qr_code(url):
         return f"Error generating QR code: {e}"
 
 
-# Example usage
-# if __name__ == "__main__":
-#     url = "https://www.example.com"
-#     (img,qr_code_path) = generate_qr_code(url)
-#     print( img, qr_code_path)
+
+if __name__ == "__main__":
+    url = "https://www.example.com"
+    (img,qr_code_path) = generate_qr_code(url)
+    print( img, qr_code_path)
